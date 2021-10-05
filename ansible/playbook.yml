@@ -1,1 +1,9 @@
----
+- name: AMI Build
+  hosts: promo-proxy
+  become: true
+  gather_facts: yes
+  roles:
+    - ch_collections.base.nagios_nrpe_client
+    - epel
+    - promo-proxy-server-config
+
