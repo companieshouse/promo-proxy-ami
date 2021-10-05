@@ -1,0 +1,26 @@
+---
+- name: Install required packages
+  package:
+    name: '{{ item }}'
+    state: present
+  with_items: '{{ required_packages }}'
+
+- name: Update httpd.conf to include ebilling and epayments conf
+  lineinfile:
+    dest: "/etc/httpd/conf/httpd.conf"
+    line: '{{ item }}'
+  with_items: '{{ httpd_conf }}'
+
+- name: Install ebilling and epayments confs
+  copy:
+    src: "{{ item }}"
+    dest: "/etc/httpd/conf/{{ item }}"
+    mode: 0644
+  with_items: '{{ proxy_conf }}' 
+
+- name: Ensure http is started and enabled at boot.
+  service:
+    name: httpd
+    state: "{{ service_state }}"
+    enabled: "{{ service_enabled }}"
+  with_items: '{{ required_packages }}'
