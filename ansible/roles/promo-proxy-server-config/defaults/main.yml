@@ -1,6 +1,7 @@
 ---
 required_packages: 
   - httpd
+  - libselinux-python3
 
 service_state: started
 service_enabled: true
