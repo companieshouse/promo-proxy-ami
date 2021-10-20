@@ -5,13 +5,19 @@
     state: present
   with_items: '{{ required_packages }}'
 
-- name: Update httpd.conf to include ebilling and epayments conf
+- name: Update httpd.conf to comment DocumentRoot 
+  replace:
+    path: /etc/httpd/conf/httpd.conf
+    regexp:  '{{ document_root }}'
+    replace: '#{{ document_root }}'
+  
+- name: Update httpd.conf to include ebilling, epayments and git conf
   lineinfile:
     dest: "/etc/httpd/conf/httpd.conf"
     line: '{{ item }}'
   with_items: '{{ httpd_conf }}'
 
-- name: Install ebilling and epayments confs
+- name: Install ebilling, epayments and git confs
   copy:
     src: "{{ item }}"
     dest: "/etc/httpd/conf/{{ item }}"
@@ -24,3 +30,10 @@
     state: "{{ service_state }}"
     enabled: "{{ service_enabled }}"
   with_items: '{{ required_packages }}'
+
+- name: Create persistent SELinux boolean policies
+  ansible.posix.seboolean:
+    name: "{{ item }}"
+    state: yes
+    persistent: yes
+  loop: "{{ selinux_policies }}"

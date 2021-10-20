@@ -6,6 +6,8 @@ required_packages:
 service_state: started
 service_enabled: true
 
+document_root: DocumentRoot "/var/www/html"
+
 httpd_conf:
   - Include conf/ebilling.conf
   - Include conf/epayments.conf
@@ -15,3 +17,7 @@ proxy_conf:
   - ebilling.conf
   - epayments.conf
   - github.conf
+
+selinux_policies:
+  - httpd_can_network_relay
+  - httpd_can_network_connect
